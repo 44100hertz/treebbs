@@ -32,6 +32,10 @@ function cancel() {
     replyModal.value.close();
 }
 
+function active() {
+    return replyTo.value !== null;
+}
+
 function doReply() {
     let post: PostCreate = {
         author: replyAuthor.value.substring(0, 64),
@@ -43,7 +47,13 @@ function doReply() {
     cancel();
 }
 
-defineExpose({ showModal });
+defineExpose({ showModal, active });
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        cancel();
+    }
+});
 </script>
 
 <template>

@@ -46,13 +46,19 @@ watch(selection, async () => {
 }, { immediate: true });
 
 // Reload all threads from server
-async function refresh() {
+async function reload() {
     root.subthreads = [];
     Object.assign(currentThreads, await getSelectedThreads(root, selection));
 }
 
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
+    if (replyModal.value.active()) {
+        return;
+    }
+    if (e.key === 'F5') {
+        reload();
+        e.preventDefault();
+    } else if (e.key === 'ArrowLeft') {
         if (selection.length > 1) {
             selection.pop()
         }
@@ -71,14 +77,14 @@ window.addEventListener('keydown', (e) => {
     }
 })
 
-const replyModal = ref({ showModal: (post: Post) => null });
+const replyModal = ref({ showModal: (post: Post) => null, active: () => false });
 function showReply(post: Post) {
     replyModal.value.showModal(post);
 }
 
 async function addReply(contents: PostCreate) {
     await addPost(contents);
-    refresh();
+    reload();
 }
 
 function getVisibleThreads() {
