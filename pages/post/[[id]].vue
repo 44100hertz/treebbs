@@ -4,6 +4,12 @@ import type { Post, PostCreate } from '~/defs/forum'
 import PostElem from '~/components/Post.vue'
 import ReplyModal from '~/components/ReplyModal.vue'
 
+definePageMeta({
+    title: 'Forum',
+    description: 'Experimental forum',
+    layout: 'forum',
+})
+
 type Thread = {
     posts: Post[],
     subthreads: Thread[],

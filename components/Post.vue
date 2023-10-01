@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import type { Post } from '~/defs/forum'
 import PostText from './PostText.vue'
 
-const MAX_LENGTH = 360;
 // declare props
 const props = defineProps<{
     post: Post
@@ -32,19 +30,19 @@ const props = defineProps<{
     transition: background 0.2s;
     box-sizing: border-box;
     border-radius: 0.5em;
-    border: 0.1em solid transparent;
+    border: 0.4em solid transparent;
 }
 
 .post:not(.parent) {
-    background: #ffffff80;
+    background: #ffffff70;
     transition: background 0.8s;
+    transition: box-shadow 0.2s;
     transition: transform 0.2s;
 }
 
 .post.parent {
-    background: #ffffffff;
-    transition: background 0.8s;
-    box-shadow: 0.5em 0.5em 0.5em #00000040;
+    background: #ffffffb0;
+    box-shadow: 0.5em 0.5em 1.0em #00000040;
     transform: translate(-0.5em, -0.5em);
 }
 
@@ -53,7 +51,7 @@ const props = defineProps<{
 }
 
 .post.selected {
-    border-color: black;
+    border-color: #ffffff;
 }
 
 .post p {
