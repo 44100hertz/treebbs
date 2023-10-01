@@ -19,7 +19,7 @@ const props = defineProps<{
         <p class="author">{{ post.author }}</p>
         <p class="date">({{ post.createdAt.toLocaleString() }})</p>
         <PostText :text="post.body" :enable_shorten="!expand" />
-        <p v-if="!preview"><button v-on:click="$emit('reply')">Reply</button></p>
+        <p v-if="!preview"><button v-on:click="$emit('reply')">Reply</button>{{ post.replyCount > 0 ? ` (${post.replyCount})` : '' }}</p>
     </article>
 </template>
 
@@ -64,4 +64,4 @@ const props = defineProps<{
     font-size: 0.8em;
     color: #555;
 }
-</style>~/defs/forum
+</style>
