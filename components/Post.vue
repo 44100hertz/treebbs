@@ -15,11 +15,13 @@ const props = defineProps<{
 </script>
 
 <template>
-    <article class="post" :class="{selected, parent}">
+    <article class="post" :class="{ selected, parent }">
         <p class="author">{{ post.author }}</p>
         <p class="date">({{ post.createdAt.toLocaleString() }})</p>
         <PostText :text="post.body" :enable_shorten="!expand" />
-        <p v-if="!preview"><button v-on:click="$emit('reply')">Reply</button>{{ post.replyCount > 0 ? ` (${post.replyCount})` : '' }}</p>
+        <p v-if="!preview"><button v-on:click="$emit('reply')">Reply</button>
+            {{ post.replyCount > 0 ? ` (${post.replyCount})` : '' }}
+        </p>
     </article>
 </template>
 
@@ -32,17 +34,20 @@ const props = defineProps<{
     border-radius: 0.5em;
     border: 0.1em solid transparent;
 }
+
 .post:not(.parent) {
     background: #ffffff80;
     transition: background 0.8s;
     transition: transform 0.2s;
 }
+
 .post.parent {
     background: #ffffffff;
     transition: background 0.8s;
     box-shadow: 0.5em 0.5em 0.5em #00000040;
     transform: translate(-0.5em, -0.5em);
 }
+
 .post:not(.selected) {
     border-color: transparent;
 }
@@ -55,6 +60,7 @@ const props = defineProps<{
     overflow-wrap: break-word;
     margin: 0.2em 0em;
 }
+
 .author {
     overflow: hidden;
     font-weight: bold;
@@ -63,5 +69,4 @@ const props = defineProps<{
 .date {
     font-size: 0.8em;
     color: #555;
-}
-</style>
+}</style>
