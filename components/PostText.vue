@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 const MAX_LENGTH = 360;
 const MAX_LINES = 5;
 
-const props = defineProps<{text: string, enable_shorten?: boolean}>();
+const props = defineProps<{ text: string, enable_shorten?: boolean }>();
 
 let shouldShorten = computed(() => {
     return props.text.length > MAX_LENGTH || props.text.split(/\n+/g).length > MAX_LINES;
@@ -23,8 +23,11 @@ let lines = computed(() => {
 </script>
 
 <template>
-    <p v-for="(line, index) in lines" class="postLine" :key="index">{{ line }}</p>
-    <button v-if="enable_shorten && shouldShorten" @click="do_shorten = !do_shorten">{{ do_shorten ? 'expand' : 'collapse' }}</button>
+    <p v-for="(line, index) in lines" class="postLine" :key="index">{{ line }}
+    <button v-if="index == lines.length-1 && enable_shorten && shouldShorten" @click="do_shorten = !do_shorten">
+        {{ do_shorten ? 'expand' : 'collapse' }}
+    </button>
+    </p>
 </template>
 
 <style scoped>
