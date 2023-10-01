@@ -5,10 +5,10 @@ export type PostId = number;
 
 export type Post = {
   id: PostId,
-  parentId: PostId | null,
+  parentId: PostId,
   author: string,
-  text: string,
+  body: string,
   createdAt: Date,
 }
 
-export type PostCreate = Pick<Post, 'author' | 'text' | 'parentId'> & { parentId: PostId };
+export type PostCreate = Pick<Post, 'author' | 'body' | 'parentId'> & { parentId: PostId };

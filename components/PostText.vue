@@ -6,10 +6,10 @@ const MAX_LINES = 5;
 const props = defineProps<{text: string, enable_shorten?: boolean}>();
 
 let shouldShorten = computed(() => {
-    return props.enable_shorten && props.text.length > MAX_LENGTH || props.text.split(/\n+/g).length > MAX_LINES;
+    return props.text.length > MAX_LENGTH || props.text.split(/\n+/g).length > MAX_LINES;
 });
 
-let do_shorten = ref(true);
+let do_shorten = ref(props.enable_shorten);
 
 let lines = computed(() => {
     if (shouldShorten.value && do_shorten.value) {
@@ -24,7 +24,7 @@ let lines = computed(() => {
 
 <template>
     <p v-for="(line, index) in lines" class="postLine" :key="index">{{ line }}</p>
-    <button v-if="shouldShorten" @click="do_shorten = !do_shorten">{{ do_shorten ? 'expand' : 'collapse' }}</button>
+    <button v-if="enable_shorten && shouldShorten" @click="do_shorten = !do_shorten">{{ do_shorten ? 'expand' : 'collapse' }}</button>
 </template>
 
 <style scoped>

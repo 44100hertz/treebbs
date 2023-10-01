@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import type { Post, PostCreate } from '~/types/forum'
+import type { Post, PostCreate } from '~/defs/forum'
 import PostElem from '~/components/Post.vue'
 import ReplyModal from '~/components/ReplyModal.vue'
 
@@ -10,17 +10,17 @@ type Thread = {
 }
 
 const root = reactive<Thread>({
-    posts: await getReplies(null),
+    posts: await getReplies(0),
     subthreads: [],
 });
 const selection = reactive([0]);
 
-async function getReplies(id: number | null): Promise<Post[]> {
-    return $fetch('/api/forum', {key: id, method: 'GET', query: {which: 'replies', id}});
+async function getReplies(id: number): Promise<Post[]> {
+    return $fetch('/api/thread', {key: id, method: 'GET', query: {which: 'replies', id}});
 }
 
 async function addPost(contents: PostCreate) {
-    $fetch('/api/forum', {method: 'POST', body: contents});
+    await $fetch('/api/createPost', {method: 'POST', body: contents});
 }
 
 // Recurse over the thread tree into the desired selection
@@ -76,8 +76,8 @@ function showReply(post: Post) {
     replyModal.value.showModal(post);
 }
 
-function addReply(contents: PostCreate) {
-    addPost(contents);
+async function addReply(contents: PostCreate) {
+    await addPost(contents);
     refresh();
 }
 
@@ -98,6 +98,7 @@ function getVisibleThreads() {
                 <PostElem :post=post
                     :parent="selection[threadIndex] === postIndex"
                     :selected="selection.length-1 === threadIndex && selection[threadIndex] === postIndex"
+                    :expand="threadIndex === 0"
                     @reply="showReply(post)" />
             </div>
         </div>

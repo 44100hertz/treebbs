@@ -35,7 +35,7 @@ function cancel() {
 function doReply() {
     let post: PostCreate = {
         author: replyAuthor.value.substring(0, 64),
-        text: replyText.value,
+        body: replyText.value,
         parentId: replyTo.value?.id as PostId,
     }
     emit('reply', post);

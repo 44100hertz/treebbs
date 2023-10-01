@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Post } from '~/types/forum'
+import type { Post } from '~/defs/forum'
 import PostText from './PostText.vue'
 
 const MAX_LENGTH = 360;
@@ -10,6 +10,7 @@ const props = defineProps<{
     selected?: boolean
     parent?: boolean
     preview?: boolean
+    expand?: boolean
 }>();
 </script>
 
@@ -17,7 +18,7 @@ const props = defineProps<{
     <article class="post" :class="{selected, parent}">
         <p class="author">{{ post.author }}</p>
         <p class="date">({{ post.createdAt.toLocaleString() }})</p>
-        <PostText :text="post.text" :enable_shorten="true" />
+        <PostText :text="post.body" :enable_shorten="!expand" />
         <p v-if="!preview"><button v-on:click="$emit('reply')">Reply</button></p>
     </article>
 </template>
