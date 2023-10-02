@@ -9,7 +9,7 @@ const emit = defineEmits<{ (e: 'reply', post: PostCreate): void }>()
 let replyTo: Ref<Post | null> = ref(null);
 let replyModal = ref({ showModal: () => null, close: () => null });
 let replyText = ref('');
-let replyAuthor = ref('Anonymous');
+let replyAuthor = ref('');
 let badReply = ref(undefined as undefined | string);
 
 function showModal(post: Post) {
@@ -27,13 +27,17 @@ function active() {
 }
 
 function doReply() {
-    const invalid = validate(replyAuthor.value, replyText.value);
+    let author = replyAuthor.value.trim();
+    if (author === '') {
+        author = 'Anonymous';
+    }
+    const invalid = validate(author, replyText.value);
     if (invalid) {
         badReply.value = invalid;
         return;
     }
     let post: PostCreate = {
-        author: replyAuthor.value.substring(0, 64),
+        author,
         body: replyText.value,
         parentId: replyTo.value?.id as PostId,
     }
