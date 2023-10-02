@@ -77,13 +77,17 @@ window.addEventListener('keydown', (e) => {
             e.preventDefault();
         }
     } else if (e.key === 'ArrowUp') {
-        if (selection[selection.length - 1] > 0) {
+        const selectHead = selection[selection.length - 1];
+        if (selectHead > 0) {
             selection[selection.length - 1]--;
+            threadElems.value?.[selection.length - 1].scrollToPost(selectHead - 1);
             e.preventDefault();
         }
     } else if (e.key === 'ArrowDown') {
-        if (selection[selection.length - 1] < currentThreads[selection.length - 1].posts.length - 1) {
+        const selectHead = selection[selection.length - 1];
+        if (selectHead < currentThreads[selection.length - 1].posts.length - 1) {
             selection[selection.length - 1]++;
+            threadElems.value?.[selection.length - 1].scrollToPost(selectHead + 1);
             e.preventDefault();
         }
     }
@@ -111,6 +115,8 @@ function getVisibleThreads() {
         .map((thread: Thread, index: number) => [thread, index] as any)
         .slice(Math.max(0, selection.length-span+1), selection.length+1)
 }
+
+let threadElems = ref([{scrollToPost: (_: number) => {}}]);
 </script>
 
 <template>

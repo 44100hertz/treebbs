@@ -2,7 +2,7 @@
 import { type Post } from '~/defs/forum';
 import PostElem from './Post.vue';
 
-defineProps<{
+const props = defineProps<{
     thread: Post[],
     threadIndex: number,
     selection: number | undefined,
@@ -15,20 +15,30 @@ const emit = defineEmits<{
     (e: 'reply', threadIndex: number, postIndex: number): void
 }>();
 
-let posts = ref(null);
+const scrollToPost = (index: number) => {
+    const targetRef = `posts-${props.threadIndex}-${index}`;
+    const elem = document.getElementById(targetRef);
+    if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
 
-defineExpose({ posts });
+defineExpose({ scrollToPost });
 </script>
 
 <template>
     <div class="postColumn" :style="{width: `calc((100% / ${columnCount}) - 1.5em)`}">
-        <div v-for="(post, postIndex) in thread" class="postSlot" :key="post.id" ref="posts"
-            @click="emit('select', threadIndex, postIndex)">
+        <div v-for="(post, postIndex) in thread" class="postSlot" :key="post.id"
+            @click="(e) => {
+                scrollToPost(postIndex);
+                emit('select', threadIndex, postIndex)
+            }">
             <PostElem
             :post=post
             :parent="selection === postIndex"
             :selected="selected && selection === postIndex"
             :expand="threadIndex === 0"
+            :id="`posts-${threadIndex}-${postIndex}`"
             @reply="emit('reply', threadIndex, postIndex)" />
         </div>
     </div>
@@ -47,7 +57,8 @@ defineExpose({ posts });
 
 .postColumn {
     height: 100vh;
-    overflow: scroll;
+    overflow-x: visible;
+    overflow-y: scroll;
     display: flex;
     padding: 0 0.5em;
     flex-direction: column;
