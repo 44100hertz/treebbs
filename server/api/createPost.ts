@@ -1,7 +1,15 @@
 import { type PostCreate, type PostId } from "~/defs/forum";
+import { validate } from "~/defs/validate";
 import { Client } from "pg";
 
 export default defineEventHandler(async (event) => {
+    const body: PostCreate = await readBody(event);
+
+    const error = validate(body.author, body.body);
+    if (error) {
+        throw new Error(error);
+    }
+
     const client = new Client({
         host: "localhost",
         port: 5432,
@@ -9,7 +17,6 @@ export default defineEventHandler(async (event) => {
     });
     const id = generatePostId();
     const createdAt = new Date();
-    const body: PostCreate = await readBody(event);
     await client.connect();
     await client.query(
         `
