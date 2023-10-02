@@ -70,24 +70,12 @@ window.addEventListener('keydown', (e) => {
     } else if (e.key === 'ArrowLeft') {
         if (selection.length > 1) {
             selection.pop()
-            if (selection.length >= columnCount.value-1) {
-                scrollAnimation.value = 'right';
-                setTimeout(() => {
-                    scrollAnimation.value = null;
-                }, 200);
-            }
             currentThreads.pop();
             e.preventDefault();
         }
     } else if (e.key === 'ArrowRight') {
         if (currentThreads[selection.length].posts.length > 0) {
             selection.push(0);
-            if (selection.length >= columnCount.value) {
-                scrollAnimation.value = 'left';
-                setTimeout(() => {
-                    scrollAnimation.value = null;
-                }, 200);
-            }
             e.preventDefault();
         }
     } else if (e.key === 'ArrowUp') {
@@ -102,6 +90,15 @@ window.addEventListener('keydown', (e) => {
             selection[selection.length - 1]++;
             e.preventDefault();
         }
+    }
+})
+
+watch(() => selection.length, (length, prevLength) => {
+    if (Math.max(length, prevLength) >= columnCount.value) {
+        scrollAnimation.value = length > prevLength ? 'left' : 'right';
+        setTimeout(() => {
+            scrollAnimation.value = null;
+        }, 200);
     }
 })
 
