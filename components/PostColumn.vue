@@ -78,6 +78,8 @@ const emit = defineEmits<{
     padding: 0.5em 0;
     animation-name: fadeIn;
     animation-duration: 0.5s;
+    animation-delay: 0.05s;
+    animation-fill-mode: both;
     animation-timing-function: ease-out;
 }
 </style>

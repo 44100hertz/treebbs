@@ -20,6 +20,7 @@ const root = reactive<Thread>({
     subthreads: [],
 });
 const selection = reactive([0]);
+const scrollAnimation = ref(null as null | 'left' | 'right');
 
 async function getReplies(id: number): Promise<Post[]> {
     return $fetch('/api/thread', {key: id, method: 'GET', query: {which: 'replies', id}});
@@ -69,12 +70,24 @@ window.addEventListener('keydown', (e) => {
     } else if (e.key === 'ArrowLeft') {
         if (selection.length > 1) {
             selection.pop()
+            if (selection.length >= columnCount.value-1) {
+                scrollAnimation.value = 'right';
+                setTimeout(() => {
+                    scrollAnimation.value = null;
+                }, 200);
+            }
             currentThreads.pop();
             e.preventDefault();
         }
     } else if (e.key === 'ArrowRight') {
         if (currentThreads[selection.length].posts.length > 0) {
             selection.push(0);
+            if (selection.length >= columnCount.value) {
+                scrollAnimation.value = 'left';
+                setTimeout(() => {
+                    scrollAnimation.value = null;
+                }, 200);
+            }
             e.preventDefault();
         }
     } else if (e.key === 'ArrowUp') {
@@ -124,8 +137,11 @@ function getVisibleThreads() {
 
 <template>
     <ReplyModal ref="replyModal" @reply="addReply"></ReplyModal>
-    <div class="board">
-        <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread"
+        <div class="board" :class="{
+            shiftLeft: scrollAnimation == 'left',
+            shiftRight: scrollAnimation == 'right'
+        }">
+            <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread"
             :columnCount="columnCount"
             :key="threadIndex"
             :thread="thread.posts"
@@ -134,17 +150,33 @@ function getVisibleThreads() {
             :selected="threadIndex === selection.length - 1"
             v-on:select="(threadIndex, postIndex) => {
                 selection[threadIndex] = postIndex;
-                selection.length = threadIndex+1;
+                selection.length = threadIndex + 1;
             }"
             v-on:reply="(threadIndex, postIndex) => {
                 showReply(currentThreads[threadIndex].posts[postIndex]);
-            }"
-            >
-        </PostColumn>
-    </div>
+            }" />
+</div>
 </template>
 
 <style scoped>
+@keyframes shiftRight {
+    from { transform: translate(max(-300px, -50vw), 0); }
+    to { transform: translate(0, 0); }
+}
+@keyframes shiftLeft {
+    from { transform: translate(min(300px, 50vw), 0); }
+    to { transform: translate(0, 0); }
+}
+.shiftRight {
+    animation-name: shiftRight;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+}
+.shiftLeft {
+    animation-name: shiftLeft;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+}
 .board {
     display: flex;
     flex-direction: row;
