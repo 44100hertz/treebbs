@@ -99,10 +99,17 @@ async function addReply(contents: PostCreate) {
     reload();
 }
 
+function getColumnCount() {
+    const postWidth = 300;
+    const span = Math.max(2, Math.floor(window.innerWidth / postWidth))
+    return span;
+}
+
 function getVisibleThreads() {
+    const span = getColumnCount();
     return currentThreads
         .map((thread: Thread, index: number) => [thread, index] as any)
-        .slice(Math.max(0, selection.length-4), selection.length+1)
+        .slice(Math.max(0, selection.length-span+1), selection.length+1)
 }
 </script>
 
@@ -110,6 +117,7 @@ function getVisibleThreads() {
     <ReplyModal ref="replyModal" @reply="addReply"></ReplyModal>
     <div class="board">
         <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread" ref="threadElems"
+            :columnCount="getColumnCount()"
             :key="currentThreads[threadIndex - 1]?.posts?.[selection[threadIndex - 1]]?.id"
             :thread="thread.posts"
             :threadIndex="threadIndex"
@@ -131,5 +139,6 @@ function getVisibleThreads() {
 .board {
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
 </style>

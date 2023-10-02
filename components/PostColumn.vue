@@ -2,7 +2,13 @@
 import { type Post } from '~/defs/forum';
 import PostElem from './Post.vue';
 
-defineProps<{thread: Post[], threadIndex: number, selection: number | undefined, selected: boolean}>();
+defineProps<{
+    thread: Post[],
+    threadIndex: number,
+    selection: number | undefined,
+    selected: boolean,
+    columnCount: number
+}>();
 
 const emit = defineEmits<{
     (e: 'select', threadIndex: number, postIndex: number): void,
@@ -15,15 +21,16 @@ defineExpose({ posts });
 </script>
 
 <template>
-    <div class="postColumn">
-    <div v-for="(post, postIndex) in thread" class="postSlot" :key="post.id" ref="posts"
-        @click="emit('select', threadIndex, postIndex)">
-        <PostElem :post=post
+    <div class="postColumn" :style="{width: `calc((100% / ${columnCount}) - 1.5em)`}">
+        <div v-for="(post, postIndex) in thread" class="postSlot" :key="post.id" ref="posts"
+            @click="emit('select', threadIndex, postIndex)">
+            <PostElem
+            :post=post
             :parent="selection === postIndex"
             :selected="selected && selection === postIndex"
             :expand="threadIndex === 0"
             @reply="emit('reply', threadIndex, postIndex)" />
-    </div>
+        </div>
     </div>
 </template>
 
@@ -32,13 +39,13 @@ defineExpose({ posts });
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
 .postColumn {
-    width: calc((100% / 5) - 1em);
     height: 100vh;
     overflow: scroll;
     display: flex;
