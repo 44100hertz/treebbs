@@ -16,7 +16,8 @@ const emit = defineEmits<{
 }>();
 
 const scrollToPost = (index: number) => {
-    const targetRef = `posts-${props.threadIndex}-${index}`;
+    const targetId = props.thread[index].id;
+    const targetRef = `posts-${targetId}`;
     const elem = document.getElementById(targetRef);
     if (elem) {
         elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -38,7 +39,7 @@ defineExpose({ scrollToPost });
             :parent="selection === postIndex"
             :selected="selected && selection === postIndex"
             :expand="threadIndex === 0"
-            :id="`posts-${threadIndex}-${postIndex}`"
+            :id="`posts-${post.id}`"
             @reply="emit('reply', threadIndex, postIndex)" />
         </div>
     </div>
