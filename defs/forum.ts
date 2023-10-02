@@ -1,5 +1,3 @@
-export const MAX_AUTHOR_LEN = 64;
-export const MAX_TEXT_LEN = 4096;
 
 export type PostId = number;
 
