@@ -12,10 +12,6 @@ let replyText = ref('');
 let replyAuthor = ref('Anonymous');
 let badReply = ref(undefined as undefined | string);
 
-watch([replyAuthor, replyText], () => {
-    badReply.value = validate(replyAuthor.value, replyText.value);
-}, { immediate: true });
-
 function showModal(post: Post) {
     replyTo.value = post;
     replyModal.value.showModal();
@@ -31,6 +27,11 @@ function active() {
 }
 
 function doReply() {
+    const invalid = validate(replyAuthor.value, replyText.value);
+    if (invalid) {
+        badReply.value = invalid;
+        return;
+    }
     let post: PostCreate = {
         author: replyAuthor.value.substring(0, 64),
         body: replyText.value,
@@ -57,17 +58,17 @@ window.addEventListener('keydown', (e) => {
                 <div class="center">Composing a reply to:</div>
                 <PostElem :post="replyTo" :selected="true" :preview="true" />
             </div>
-            <form>
+            <div>
                 <div class="flexRow">
                     Name:
                     <input type="text" v-model="replyAuthor" placeholder="Anonymous" />
                 </div>
                 <textarea v-model="replyText"></textarea>
                 <div class="flexRow">
-                    <button @click="doReply" :disabled="badReply !== undefined">Reply</button>
+                    <button @click="doReply">Reply</button>
                     <button @click="cancel">Cancel</button>
                 </div>
-            </form>
+            </div>
             <div class="warn">{{ badReply ? `cannot submit: ${badReply}.` : '' }}</div>
         </div>
     </dialog>
