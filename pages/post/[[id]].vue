@@ -103,14 +103,19 @@ async function addReply(contents: PostCreate) {
     reload();
 }
 
-function getColumnCount() {
-    const postWidth = 300;
+const columnCount = ref(3);
+
+function setColumnCount() {
+    const postWidth = 300
     const span = Math.max(2, Math.floor(window.innerWidth / postWidth))
-    return span;
+    columnCount.value = span
 }
 
+setColumnCount();
+window.addEventListener('resize', setColumnCount);
+
 function getVisibleThreads() {
-    const span = getColumnCount();
+    const span = columnCount.value
     return currentThreads
         .map((thread: Thread, index: number) => [thread, index] as any)
         .slice(Math.max(0, selection.length-span+1), selection.length+1)
@@ -123,7 +128,7 @@ let threadElems = ref([{scrollToPost: (_: number) => {}}]);
     <ReplyModal ref="replyModal" @reply="addReply"></ReplyModal>
     <div class="board">
         <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread" ref="threadElems"
-            :columnCount="getColumnCount()"
+            :columnCount="columnCount"
             :key="currentThreads[threadIndex - 1]?.posts?.[selection[threadIndex - 1]]?.id"
             :thread="thread.posts"
             :threadIndex="threadIndex"
