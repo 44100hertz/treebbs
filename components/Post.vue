@@ -38,12 +38,12 @@ const props = defineProps<{
     transition: background 0.8s;
     transition: box-shadow 0.2s;
     transition: transform 0.2s;
+    transform: translate(0.5em, 0.5em);
 }
 
 .post.parent {
     background: #ffffffb0;
     box-shadow: 0.5em 0.5em 1.0em #00000040;
-    transform: translate(-0.5em, -0.5em);
 }
 
 .post:not(.selected) {

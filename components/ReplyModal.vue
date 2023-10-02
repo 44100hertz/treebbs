@@ -83,10 +83,14 @@ window.addEventListener('keydown', (e) => {
     text-align: center; 
 }
 .replyModal {
-    background: #ffffff80;
+    border: none;
+    border-radius: 2em;
+    padding: 2em;
+    background: #eeeeeec0;
+    box-shadow: 0.5em 0.5em 1.0em #00000040;
     backdrop-filter: blur(0.2em);
-    border-radius: 1em;
-    max-width: 600px;
+    max-width: min(100vw, 600px);
+    box-sizing: border-box;
 }
 textArea {
     width: 100%;

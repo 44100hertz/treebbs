@@ -1,15 +1,21 @@
 <template>
-  <header>
-    TREEBBS
-    <hr>
-  </header>
   <div>
     <slot />
   </div>
 </template>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700&display=swap');
 body {
-  background: #8bc0b0;
+  background: url("/bg.png");
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: 'Alegreya Sans', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+textarea {
+  font-family: 'Alegreya Sans', sans-serif;
+  letter-spacing: 0.03em;
 }
 
 button {

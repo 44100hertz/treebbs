@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
 import type { Post, PostCreate } from '~/defs/forum'
-import PostElem from '~/components/Post.vue'
+import PostColumn from '~/components/PostColumn.vue'
 import ReplyModal from '~/components/ReplyModal.vue'
 
 definePageMeta({
@@ -61,24 +61,30 @@ window.addEventListener('keydown', (e) => {
     if (replyModal.value.active()) {
         return;
     }
+
     if (e.key === 'F5') {
         reload();
         e.preventDefault();
     } else if (e.key === 'ArrowLeft') {
         if (selection.length > 1) {
             selection.pop()
+            currentThreads.pop();
+            e.preventDefault();
         }
     } else if (e.key === 'ArrowRight') {
         if (currentThreads[selection.length].posts.length > 0) {
             selection.push(0);
+            e.preventDefault();
         }
     } else if (e.key === 'ArrowUp') {
         if (selection[selection.length - 1] > 0) {
             selection[selection.length - 1]--;
+            e.preventDefault();
         }
     } else if (e.key === 'ArrowDown') {
         if (selection[selection.length - 1] < currentThreads[selection.length - 1].posts.length - 1) {
             selection[selection.length - 1]++;
+            e.preventDefault();
         }
     }
 })
@@ -103,17 +109,21 @@ function getVisibleThreads() {
 <template>
     <ReplyModal ref="replyModal" @reply="addReply"></ReplyModal>
     <div class="board">
-        <div v-for="[thread, threadIndex] in getVisibleThreads()" class="thread"
-            :key="currentThreads[threadIndex - 1]?.posts?.[selection[threadIndex - 1]]?.id">
-            <div v-for="(post, postIndex) in thread.posts" class="postSlot" :key="post.id"
-                @click="selection[threadIndex] = postIndex; selection.length = threadIndex+1">
-                <PostElem :post=post
-                    :parent="selection[threadIndex] === postIndex"
-                    :selected="selection.length-1 === threadIndex && selection[threadIndex] === postIndex"
-                    :expand="threadIndex === 0"
-                    @reply="showReply(post)" />
-            </div>
-        </div>
+        <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread" ref="threadElems"
+            :key="currentThreads[threadIndex - 1]?.posts?.[selection[threadIndex - 1]]?.id"
+            :thread="thread.posts"
+            :threadIndex="threadIndex"
+            :selection="selection[threadIndex]"
+            :selected="threadIndex === selection.length - 1"
+            v-on:select="(threadIndex, postIndex) => {
+                selection[threadIndex] = postIndex;
+                selection.length = threadIndex+1
+            }"
+            v-on:reply="(threadIndex, postIndex) => {
+                showReply(currentThreads[threadIndex].posts[postIndex]);
+            }"
+            >
+        </PostColumn>
     </div>
 </template>
 
@@ -121,18 +131,5 @@ function getVisibleThreads() {
 .board {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
 }
-
-.thread {
-    width: calc((100% - 5em) / 5);
-    display: flex;
-    padding: 0 0.5em;
-    flex-direction: column;
-}
-
-.postSlot {
-    width: 100%;
-    padding: 0.5em 0;
-}
-</style>~/defs/forum
+</style>
