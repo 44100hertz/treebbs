@@ -34,16 +34,16 @@ const props = defineProps<{
 }
 
 .post:not(.parent) {
-    background: #ffffff70;
+    background: #ffffff40;
     transition: background 0.8s;
     transition: box-shadow 0.2s;
     transition: transform 0.2s;
-    transform: translate(0.5em, 0.5em);
+    transform: translate(0.25em, 0.25em);
 }
 
 .post.parent {
     background: #ffffffb0;
-    box-shadow: 0.5em 0.5em 1.0em #00000040;
+    box-shadow: 0.25em 0.25em 0.25em #00000040;
 }
 
 .post:not(.selected) {

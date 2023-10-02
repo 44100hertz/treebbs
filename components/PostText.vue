@@ -24,7 +24,11 @@ let lines = computed(() => {
 
 <template>
     <p v-for="(line, index) in lines" class="postLine" :key="index">{{ line }}
-    <button v-if="index == lines.length-1 && enable_shorten && shouldShorten" @click="do_shorten = !do_shorten">
+    <button class="expandButton" v-if="index == lines.length-1 && enable_shorten && shouldShorten"
+    @click="(e) => {
+        do_shorten = !do_shorten;
+        e.stopPropagation();
+    }">
         {{ do_shorten ? 'expand' : 'collapse' }}
     </button>
     </p>
@@ -34,5 +38,16 @@ let lines = computed(() => {
 .postLine {
     overflow-wrap: break-word;
     margin: 0.5em 0em;
+}
+
+.expandButton {
+    float: right;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #084;
+    font-size: 0.8em;
+    cursor: pointer;
 }
 </style>
