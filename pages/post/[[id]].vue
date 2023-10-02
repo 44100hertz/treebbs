@@ -47,6 +47,7 @@ const getSelectedThreads = async (thread: Thread, selection: number[]): Promise<
 }
 
 const currentThreads = reactive([root]);
+
 watch(selection, async () => {
     Object.assign(currentThreads, await getSelectedThreads(root, selection));
 }, { immediate: true });
@@ -80,14 +81,12 @@ window.addEventListener('keydown', (e) => {
         const selectHead = selection[selection.length - 1];
         if (selectHead > 0) {
             selection[selection.length - 1]--;
-            threadElems.value?.[selection.length - 1].scrollToPost(selectHead - 1);
             e.preventDefault();
         }
     } else if (e.key === 'ArrowDown') {
         const selectHead = selection[selection.length - 1];
         if (selectHead < currentThreads[selection.length - 1].posts.length - 1) {
             selection[selection.length - 1]++;
-            threadElems.value?.[selection.length - 1].scrollToPost(selectHead + 1);
             e.preventDefault();
         }
     }
@@ -121,22 +120,21 @@ function getVisibleThreads() {
         .slice(Math.max(0, selection.length-span+1), selection.length+1)
 }
 
-let threadElems = ref([{scrollToPost: (_: number) => {}}]);
 </script>
 
 <template>
     <ReplyModal ref="replyModal" @reply="addReply"></ReplyModal>
     <div class="board">
-        <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread" ref="threadElems"
+        <PostColumn v-for="[thread, threadIndex] in getVisibleThreads()" class="thread"
             :columnCount="columnCount"
-            :key="currentThreads[threadIndex - 1]?.posts?.[selection[threadIndex - 1]]?.id"
+            :key="threadIndex"
             :thread="thread.posts"
             :threadIndex="threadIndex"
             :selection="selection[threadIndex]"
             :selected="threadIndex === selection.length - 1"
             v-on:select="(threadIndex, postIndex) => {
                 selection[threadIndex] = postIndex;
-                selection.length = threadIndex+1
+                selection.length = threadIndex+1;
             }"
             v-on:reply="(threadIndex, postIndex) => {
                 showReply(currentThreads[threadIndex].posts[postIndex]);

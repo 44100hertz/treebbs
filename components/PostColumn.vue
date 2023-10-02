@@ -10,28 +10,36 @@ const props = defineProps<{
     columnCount: number
 }>();
 
+const scrollToPost = (id: number, instant: boolean) => {
+    const targetRef = `posts-${id}`;
+    const elem = document.getElementById(targetRef);
+    if (elem) {
+        elem.scrollIntoView({ behavior: instant ? 'instant' : 'smooth' , block: 'center' });
+    }
+}
+
+setTimeout(() => {
+    if (props.selection !== undefined) {
+        scrollToPost(props.thread[props.selection].id, true);
+    }
+});
+
+watch(toRef(props, 'selection'), () => {
+    if (props.selection !== undefined) {
+        scrollToPost(props.thread[props.selection].id, false);
+    }
+})
+
 const emit = defineEmits<{
     (e: 'select', threadIndex: number, postIndex: number): void,
     (e: 'reply', threadIndex: number, postIndex: number): void
 }>();
-
-const scrollToPost = (index: number) => {
-    const targetId = props.thread[index].id;
-    const targetRef = `posts-${targetId}`;
-    const elem = document.getElementById(targetRef);
-    if (elem) {
-        elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-defineExpose({ scrollToPost });
 </script>
 
 <template>
     <div class="postColumn" :style="{width: `calc((100% / ${columnCount}) - 1.5em)`}">
         <div v-for="(post, postIndex) in thread" class="postSlot" :key="post.id"
             @click="(e) => {
-                scrollToPost(postIndex);
                 emit('select', threadIndex, postIndex)
             }">
             <PostElem
